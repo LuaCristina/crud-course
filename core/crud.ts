@@ -1,17 +1,53 @@
 import fs from "fs"; //ES6
 
-// const fs = require("fs");   -CommonJS
+const DB_FILE_PATH = "./core/db";
 
 console.log("[CRUD]");
 
-const DB_FILE_PATH = "./core/db";
-
-function create(content: string){
-    // precisa salvar o content no sistema
-    fs.writeFileSync(DB_FILE_PATH, content);
-    return content;
+interface Todo {
+  date: string;
+  content: string;
+  done: boolean;
 }
 
+function create(content: string) {
+  const todo: Todo = {
+    date: new Date().toISOString(),
+    content: content,
+    done: false,
+  };
 
-//simulation 
-console.log(create("jhakjlkas"));
+  const todos: Array<Todo> = [
+    ...read(),
+    todo,
+  ];
+
+  // salvar o content no sistema
+  fs.writeFileSync(DB_FILE_PATH, JSON.stringify({
+    todos,
+    dogs: [],
+  }, null, 2));
+  return content;
+}
+
+ 
+function read(): Array<Todo> {
+  const dbString = fs.readFileSync(DB_FILE_PATH, "utf-8");
+  const db = JSON.parse(dbString || "{}");
+  if(!db.todos) { // Fail Fast Validations
+    return [];
+  }
+
+  return db.todos;
+}
+
+function CLEAR_DB() {
+  fs.writeFileSync(DB_FILE_PATH, "");
+}
+
+create("primeirA tODO")
+create("aloue lkalks tODO")
+create("jahkjlasjls tODO")
+console.log(read())
+
+
