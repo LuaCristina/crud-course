@@ -5,6 +5,7 @@ const DB_FILE_PATH = "./core/db";
 console.log("[CRUD]");
 
 interface Todo {
+    id: string,
   date: string;
   content: string;
   done: boolean;
@@ -12,6 +13,7 @@ interface Todo {
 
 function create(content: string) {
   const todo: Todo = {
+    id: "1",
     date: new Date().toISOString(),
     content: content,
     done: false,
@@ -25,7 +27,6 @@ function create(content: string) {
   // salvar o content no sistema
   fs.writeFileSync(DB_FILE_PATH, JSON.stringify({
     todos,
-    dogs: [],
   }, null, 2));
   return content;
 }
@@ -45,9 +46,10 @@ function CLEAR_DB() {
   fs.writeFileSync(DB_FILE_PATH, "");
 }
 
-create("primeirA tODO")
-create("aloue lkalks tODO")
-create("jahkjlasjls tODO")
-console.log(read())
+CLEAR_DB()
+create("Primeira TODO")
+create("Segunda TODO")
+create("Terceira TODO")
+console.log(read());
 
 
