@@ -1,4 +1,5 @@
 import fs from "fs"; //ES6
+import { v4 as uuidv4} from 'uuid';
 
 const DB_FILE_PATH = "./core/db";
 
@@ -11,9 +12,10 @@ interface Todo {
   done: boolean;
 }
 
-function create(content: string) {
+// cria o objeto e suas respectoivas características
+function create(content: string): Todo {
   const todo: Todo = {
-    id: "1",
+    id: uuidv4(),
     date: new Date().toISOString(),
     content: content,
     done: false,
@@ -24,12 +26,31 @@ function create(content: string) {
     todo,
   ];
 
+
+
+
+
   // salvar o content no sistema
   fs.writeFileSync(DB_FILE_PATH, JSON.stringify({
     todos,
   }, null, 2));
-  return content;
+  return todo;
 }
+
+function atualizar(id: string, partialTodo: Partial<Todo>){
+    const todos = read();
+    todos.forEach((currentTodo) => {
+        const isToUpdate = currentTodo.id === id;
+        if(isToUpdate){
+            Object.assign(currentTodo, partialTodo)
+        }
+    })
+    fs.writeFileSync(DB_FILE_PATH, JSON.stringify({
+        todos,
+    }, null, 4));
+    console.log("todos atualizados", partialTodo)
+}
+
 
  
 function read(): Array<Todo> {
@@ -49,7 +70,10 @@ function CLEAR_DB() {
 CLEAR_DB()
 create("Primeira TODO")
 create("Segunda TODO")
-create("Terceira TODO")
+const terceiraTodo = create("Terceira TODO");
+atualizar(terceiraTodo.id, {
+    content: "aloaloalo",
+});
 console.log(read());
 
 
